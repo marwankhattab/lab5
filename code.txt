@@ -1,0 +1,67 @@
+import React, { useState } from "react";
+import ReactDOM from "react-dom";
+ 
+// Component: shows one movie
+function Movie({ movie, onRemove }) {
+  return (
+    <li>
+      <b>{movie.title}</b> {"⭐".repeat(movie.rating)}
+      <p>{movie.review}</p>
+      <button onClick={() => onRemove(movie.id)}>Remove</button>
+    </li>
+  );
+}
+ 
+// Our page
+function App() {
+  const [movies, setMovies] = useState([]);
+  const [title, setTitle] = useState("");
+  const [rating, setRating] = useState(3);
+  const [review, setReview] = useState("");
+ 
+  function addMovie() {
+    if (title === "") return;
+    setMovies([...movies, { id: Date.now(), title, rating, review }]);
+    setTitle("");
+    setRating(3);
+    setReview("");
+  }
+ 
+  function removeMovie(id) {
+    setMovies(movies.filter((m) => m.id !== id));
+  }
+ 
+  return (
+    <div>
+      <h1>Movies Watch List</h1>
+ 
+      <input
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Movie title"
+      />
+      <select value={rating} onChange={(e) => setRating(Number(e.target.value))}>
+        <option value={1}>1 star</option>
+        <option value={2}>2 stars</option>
+        <option value={3}>3 stars</option>
+        <option value={4}>4 stars</option>
+        <option value={5}>5 stars</option>
+      </select>
+      <input
+        value={review}
+        onChange={(e) => setReview(e.target.value)}
+        placeholder="Review"
+      />
+      <button onClick={addMovie}>Add</button>
+ 
+      <ul>
+        {movies.map((movie) => (
+          <Movie key={movie.id} movie={movie} onRemove={removeMovie} />
+        ))}
+      </ul>
+    </div>
+  );
+}
+ 
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
